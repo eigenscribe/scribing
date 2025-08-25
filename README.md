@@ -15,3 +15,4 @@ A curated collection of notes, demo plots, and exploratory notebooks from the Ei
 git clone https://github.com/eigenscribe/scribing.git
 cd scribing
 pip install -r requirements.txt
+```
