@@ -5,22 +5,24 @@ from fractions import Fraction
 from sympy import Matrix, lcm
 import re
 
+
 def parse_compound(compound):
     """
     Parses a chemical compound with support for nested parentheses.
     E.g., "Al2(SO4)3" -> {'Al': 2, 'S': 3, 'O': 12}
     """
-    pattern = r'([A-Z][a-z]?|$$|$$|\d+)'
+    pattern = r"([A-Z][a-z]?|$$|$$|\d+)"
     tokens = re.findall(pattern, compound)
+
     def parse_tokens(tokens):
         stack = [{}]
         i = 0
         while i < len(tokens):
             token = tokens[i]
-            if token == '(':
+            if token == "(":
                 stack.append({})
                 i += 1
-            elif token == ')':
+            elif token == ")":
                 group = stack.pop()
                 i += 1
                 multiplier = 1
@@ -29,7 +31,7 @@ def parse_compound(compound):
                     i += 1
                 for element, count in group.items():
                     stack[-1][element] = stack[-1].get(element, 0) + count * multiplier
-            elif re.match(r'[A-Z][a-z]?$', token):
+            elif re.match(r"[A-Z][a-z]?$", token):
                 element = token
                 count = 1
                 i += 1
@@ -41,15 +43,17 @@ def parse_compound(compound):
                 # It's a digit, already handled
                 i += 1
         return stack[0]
+
     return parse_tokens(tokens)
+
 
 def build_matrix(equation):
     """
     Builds a stoichiometry matrix from the chemical equation.
     """
-    reactants_str, products_str = equation.replace(' ', '').split('=')
-    reactants = reactants_str.split('+')
-    products = products_str.split('+')
+    reactants_str, products_str = equation.replace(" ", "").split("=")
+    reactants = reactants_str.split("+")
+    products = products_str.split("+")
 
     all_compounds = reactants + products
     element_list = []
@@ -80,6 +84,7 @@ def build_matrix(equation):
 
     return matrix, all_compounds, element_list
 
+
 def balance_equation(equation):
     """
     Balances the chemical equation and returns it as a string.
@@ -95,7 +100,9 @@ def balance_equation(equation):
     null_space = sympy_matrix.nullspace()
 
     if not null_space:
-        raise ValueError("No solution found. The equation may already be balanced or invalid.")
+        raise ValueError(
+            "No solution found. The equation may already be balanced or invalid."
+        )
 
     basis = null_space[0]
     lcm_denoms = lcm([term.q for term in basis])
@@ -104,13 +111,13 @@ def balance_equation(equation):
     coeffs = normalize_coefficients(coeffs)
 
     # Build the balanced equation string
-    num_reactants = len(equation.replace(' ', '').split('=')[0].split('+'))
+    num_reactants = len(equation.replace(" ", "").split("=")[0].split("+"))
     balanced_reactants = []
     for i in range(num_reactants):
         coeff = coeffs[i]
         compound = compounds[i]
         if coeff != 1:
-            balanced_reactants.append(f'{coeff}{compound}')
+            balanced_reactants.append(f"{coeff}{compound}")
         else:
             balanced_reactants.append(compound)
     balanced_products = []
@@ -118,11 +125,12 @@ def balance_equation(equation):
         coeff = coeffs[i]
         compound = compounds[i]
         if coeff != 1:
-            balanced_products.append(f'{coeff}{compound}')
+            balanced_products.append(f"{coeff}{compound}")
         else:
             balanced_products.append(compound)
-    balanced_eq = ' + '.join(balanced_reactants) + ' = ' + ' + '.join(balanced_products)
+    balanced_eq = " + ".join(balanced_reactants) + " = " + " + ".join(balanced_products)
     return balanced_eq
+
 
 def normalize_coefficients(coeffs):
     """
@@ -135,12 +143,13 @@ def normalize_coefficients(coeffs):
         coeffs = [-c for c in coeffs]
     return coeffs
 
+
 # If the module is run as a script, allow input from the user
 if __name__ == "__main__":
     equation = input("Enter the unbalanced chemical equation:\n")
     try:
         balanced_equation = balance_equation(equation)
-        print('Balanced Equation:')
+        print("Balanced Equation:")
         print(balanced_equation)
     except Exception as e:
-        print(f'Error: {e}')
+        print(f"Error: {e}")

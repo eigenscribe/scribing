@@ -1,23 +1,26 @@
 import numpy as np
 
+
 def random_modular_graph(n, c, p, r):
     """
     Build a random modular graph, given number of modules, and link density.
-    
+
     Parameters:
     n (int): Number of nodes
     c (int): Number of clusters/modules
     p (float): Overall probability of attachment
     r (float): Proportion of links within modules
-    
+
     Returns:
     tuple: (adjacency matrix, modules to which the nodes are assigned)
     """
-    
+
     z = round(p * (n - 1))  # z = p(n - 1) - Erdos-Renyi average degree
 
     # Assign nodes to modules
-    modules = [list(range(round((k - 1) * n / c), round(k * n / c))) for k in range(1, c + 1)]
+    modules = [
+        list(range(round((k - 1) * n / c), round(k * n / c))) for k in range(1, c + 1)
+    ]
 
     adj = np.zeros((n, n), dtype=int)  # Initialize adjacency matrix
 
@@ -25,7 +28,7 @@ def random_modular_graph(n, c, p, r):
         for j in range(i + 1, n):
             module_i = (i * c) // n  # The module to which i belongs
             module_j = (j * c) // n  # The module to which j belongs
-            
+
             if module_i == module_j:
                 # Probability of attachment within module
                 if np.random.rand() <= r * z / (n / c - 1):
@@ -39,9 +42,10 @@ def random_modular_graph(n, c, p, r):
 
     return adj, modules
 
+
 # Example usage
 n = 100  # Number of nodes
-c = 5    # Number of modules
+c = 5  # Number of modules
 p = 0.1  # Overall probability of attachment
 r = 0.5  # Proportion of links within modules
 
