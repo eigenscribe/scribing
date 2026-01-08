@@ -18,14 +18,15 @@ import matplotlib.pyplot as plt
 from scipy.constants import physical_constants
 from scipy.sparse import diags
 from scipy.sparse.linalg import eigsh
-import pandas as pd# Import necessary libraries
+import pandas as pd  # Import necessary libraries
 import numpy as np
 import sympy as sp
 from IPython.display import display, Math
 
 import sys
+
 sys.path.append('/workspaces/scribing/')
-from colors import Bcolors as bc
+from src.colors import Bcolors as bc
 ```
 
 # Numerically solving for eigenstates and eigenvalues of an arbitrary 1D potential
