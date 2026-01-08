@@ -120,21 +120,39 @@ $$\mu = \frac{m_\text{H} m_\text{F}}{m_\text{H} + m_\text{F}}$$
 
 ```python
 # Atomic mass in atomic mass units
-m_H_AU = 1.00784     # atomic mass units
-m_F_AU = 18.998403   # atomic mass units
+m_H_amu = 1.00784     # atomic mass units (Daltons)
+m_F_amu = 18.998403   # atomic mass units (Daltons)
 
-mu_AU = (m_H_AU * m_F_AU) / (m_H_AU + m_F_AU)
+# Reduced mass in atomic mass units
+mu_amu = (m_H_amu * m_F_amu) / (m_H_amu + m_F_amu)   # Daltons
+
+# Reduced mass in atomic units
+m_e_amu = 5.4858e-4         # electron mass (Daltons)
+mu_AU = mu_amu / m_e_amu    # reduced mass (atomic units ✔️)
 
 # Reduced mass in atomic mass units (mu / m_e)
 print(f"Reduced mass: {bc.GREEN}{mu_AU:.3e} atomic mass units{bc.ENDC}")
 ```
 
-## 3️⃣ Set up spatial grid
+## 3️⃣ Compute harmonic frequency and $\alpha$
+
+```python
+# Compute harmonic frequency in atomic units
+omega_AU = np.sqrt(k_AU / mu_AU)
+
+# Compute alpha in atomic units
+alpha_AU = np.sqrt(k_AU / (2 * D_e_AU))
+
+print(f"Omega in atomic units = {omega_AU:.5f}")
+print(f"Alpha in atomic units = {alpha_AU:.5f}")
+```
+
+## 4️⃣ Set up spatial grid
 
 ```python
 # Spatial range in atomic units (typically a few Bohr radii around equilibrium)
-xmin = (-2e-10)/(a_0_SI)  # a_0
-xmax = (5e-10)/(a_0_SI)   # a_0
+xmin = (-2)/(a_0_AU)  # a_0
+xmax = (5)/(a_0_AU)   # a_0
 
 N = 1000  # Increase N for better resolution
 x = np.linspace(xmin, xmax, N)      # Displacement from equilibrium position
